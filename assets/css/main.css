@@ -1,4 +1,9 @@
 .carousel-area .tns-nav button:hover, .carousel-area .tns-nav button.tns-nav-active {
   background: #fff;
 }
+
+.icon-scale img {
+  transform: scale(0.5);
+}
+
 /*# sourceMappingURL=main.css.map */
