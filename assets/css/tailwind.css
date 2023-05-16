@@ -1155,8 +1155,8 @@ body {
 
 p {
   --text-opacity: 1;
-  color: #718096;
-  color: rgba(113, 128, 150, var(--text-opacity));
+  color: #030712;
+  /* color: rgba(113, 128, 150, var(--text-opacity)); */
 }
 
 .container {
@@ -1241,7 +1241,9 @@ p {
   padding-bottom: 0.5rem;
   text-transform: uppercase;
   --text-opacity: 1;
-  color: #4a5568;
+  color: #030712;
+  /* color: #4a5568; */
+  font-weight: bold;
   color: rgba(74, 85, 104, var(--text-opacity));
   transition-duration: 300ms;
 }
