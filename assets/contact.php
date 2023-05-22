@@ -1,54 +1,44 @@
 <?php
 
-    // Only process POST reqeusts.
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        // Get the form fields and remove whitespace.
-        $name = strip_tags(trim($_POST["name"]));
-				$name = str_replace(array("\r","\n"),array(" "," "),$name);
-        $email = filter_var(trim($_POST["email"]), FILTER_SANITIZE_EMAIL);
-        $subject = filter_var(trim($_POST["subject"]), FILTER_SANITIZE_EMAIL);
-        $message = trim($_POST["message"]);
+require_once '../vendor/autoload.php'; // Include the PHPMailer autoloader
 
-        // Check that data was sent to the mailer.
-        if ( empty($name) OR empty($message) OR empty($subject) OR !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            // Set a 400 (bad request) response code and exit.
-            http_response_code(400);
-            echo "Please complete the form and try again.";
-            exit;
-        }
+// Create a new PHPMailer instance
+$mail = new PHPMailer\PHPMailer\PHPMailer();
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
 
-        // Set the recipient email address.
-        // FIXME: Update this to your desired email address.
-        $recipient = "michaelsaiba84@gmail.com";
+$mail = new PHPMailer(true);
 
-        // Set the email subject.
-        $subject = "New contact from $name";
+try {    
+    // Set the SMTP server settings
+    $mail->SMTPDebug = SMTP::DEBUG_SERVER;                      //Enable verbose debug output
+    $mail->isSMTP();
+    $mail->Host = 'smtp.googlemail.com'; // Replace with your SMTP server hostname
+    $mail->Port = 465; // Replace with your SMTP server port number
+    $mail->SMTPAuth = true;
+    $mail->Username = 'michaelsaiba84@gmail.com'; // Replace with your SMTP server username
+    $mail->Password = 'ygxvsqgfobrtmbof'; // Replace with your SMTP server password
+    $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;            //Enable implicit TLS encryption
 
-        // Build the email content.
-        $email_content = "Name: $name\n";
-        $email_content .= "Email: $email\n\n";
-        $email_content .= "Subject: $subject\n\n";
-        $email_content .= "Message:\n$message\n";
 
-        // Build the email headers.
-        $email_headers = "From: $name <$email>";
+    //Recipients
+    $mail->setFrom('info@kilelecraft.com', 'Kilele Craft');
+    // $mail->addAddress('michaelsaiba84@gmail.com', 'Sales Kilele Craft');
+    $mail->addAddress('sales@kilelecraft.com', 'Sales Kilele Craft');
+    $mail->addReplyTo('info@kilelecraft.com', 'Information');
+    
+    $mail->isHTML(true); //Set email format to HTML
+    $mail->Subject = 'New contact from ' . $_POST['name'];
+    $mail->Body = "Name: {$_POST['name']}\nEmail: {$_POST['email']}\nSubject: {$_POST['subject']}\nMessage: {$_POST['message']}";
 
-        // Send the email.
-        if (mail($recipient, $email_content, $email_headers)) {
-            // Set a 200 (okay) response code.
-            http_response_code(200);
-            echo "Thank You! Your message has been sent.";
-        } else {
-            // Set a 500 (internal server error) response code.
-            http_response_code(500);
-            echo "Oops! Something went wrong and we couldn't send your message.";
-        }
+    $mail->send();
+    header("Location: ../index.html?success=1");
+    exit;
+    // echo 'Message has been sent';
+} catch (Exception $e) {
+    echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+}
 
-    } else {
-        // Not a POST request, set a 403 (forbidden) response code.
-        http_response_code(403);
-        echo "There was a problem with your submission, please try again.";
-    }
 
 ?>
-
