@@ -8,6 +8,7 @@
 @tailwind utilities;
 body {
   font-family: 'Montserrat', sans-serif;
+  
 }
 p {
   @apply text-gray-600;
